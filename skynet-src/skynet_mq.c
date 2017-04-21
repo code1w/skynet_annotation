@@ -22,14 +22,14 @@ struct message_queue {
 	struct spinlock lock;   // 这个自旋锁有必要吗?
 	uint32_t handle;
 	int cap;
-	int head;　 //  head 为何是int 而不是 skyent_message 结构 ?
+	int head; //head为何是int而不是skyent_message结构
 	int tail;   
 	int release;
 	int in_global;   //是否在全局队列中
 	int overload;
 	int overload_threshold;
 	struct skynet_message *queue; // Actor 邮箱
-	struct message_queue *next;   // 与其他的　Actor　构成全局消息链
+	struct message_queue *next;   // 与其他的Actor构成全局消息链
 };
 
 struct global_queue {
@@ -88,7 +88,7 @@ skynet_mq_create(uint32_t handle) {
 	// set in_global flag to avoid push it to global queue .
 	// If the service init success, skynet_context_new will call skynet_mq_push to push it to global queue.
 	q->in_global = MQ_IN_GLOBAL;
-	q->ase = 0;
+	q->release = 0;
 	q->overload = 0;
 	q->overload_threshold = MQ_OVERLOAD;
 	q->queue = skynet_malloc(sizeof(struct skynet_message) * q->cap);
