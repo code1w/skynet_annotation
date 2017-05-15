@@ -1,5 +1,6 @@
 local skynet = require "skynet"
 local socket = require "socket"
+local queue = require "skynet.queue"
 
 local function server()
 	local host
@@ -30,4 +31,6 @@ end
 skynet.start(function()
 	--skynet.fork(server)
 	skynet.fork(client)
+	local cs = queue()  -- cs 是一个函数
+	cs(function() print("call cs ") end)
 end)

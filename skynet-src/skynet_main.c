@@ -18,7 +18,7 @@ static int
 optint(const char *key, int opt) {
 	const char * str = skynet_getenv(key);
 	if (str == NULL) {
-		char tmp[20];
+		char tmp[20];   // 为何需要20个字节
 		sprintf(tmp,"%d",opt);
 		skynet_setenv(key, tmp);
 		return opt;

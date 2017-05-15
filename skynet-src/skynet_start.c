@@ -187,7 +187,7 @@ start(int thread) {
 	m->count = thread;
 	m->sleep = 0;
 
-	m->m = skynet_malloc(thread * sizeof(struct skynet_monitor *));
+	m->m = skynet_malloc(thread * sizeof(struct skynet_monitor *)); // 
 	int i;
 	for (i=0;i<thread;i++) {
 		m->m[i] = skynet_monitor_new();
@@ -201,21 +201,26 @@ start(int thread) {
 		exit(1);
 	}
 
-	create_thread(&pid[0], thread_monitor, m);
-	create_thread(&pid[1], thread_timer, m);
-	create_thread(&pid[2], thread_socket, m);
+	create_thread(&pid[0], thread_monitor, m); // 监控线程
+	create_thread(&pid[1], thread_timer, m);   // 定时器线程
+	create_thread(&pid[2], thread_socket, m);  // 网络线程
+	                                           // 数据库线程
 
 	static int weight[] = { 
-		-1, -1, -1, -1, 0, 0, 0, 0,
-		1, 1, 1, 1, 1, 1, 1, 1, 
-		2, 2, 2, 2, 2, 2, 2, 2, 
-		3, 3, 3, 3, 3, 3, 3, 3, };
+		-1,-1,-1,-1, 
+		0, 0, 0, 0,
+		1, 1, 1, 1, 
+		1, 1, 1, 1, 
+		2, 2, 2, 2,
+		2, 2, 2, 2, 
+		3, 3, 3, 3, 
+		3, 3, 3, 3, };
 	struct worker_parm wp[thread];
-	for (i=0;i<thread;i++) {
+	for (i = 0; i < thread; i++) {
 		wp[i].m = m;
 		wp[i].id = i;
 		if (i < sizeof(weight)/sizeof(weight[0])) {
-			wp[i].weight= weight[i];
+			wp[i].weight= weight[i];  // weight作用是啥
 		} else {
 			wp[i].weight = 0;
 		}
@@ -223,7 +228,7 @@ start(int thread) {
 	}
 
 	for (i=0;i<thread+3;i++) {
-		pthread_join(pid[i], NULL); 
+		pthread_join(pid[i], NULL); // 等待所有线程结束
 	}
 
 	free_monitor(m);
